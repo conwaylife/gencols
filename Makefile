@@ -11,3 +11,6 @@ makematrix:	makematrix.o lists.o
 
 makepatlist:	makepatlist.o lists.o
 	$(CC) -o makepatlist makepatlist.o lists.o
+
+clean:
+	rm *.o gencols makematrix makepatlist
