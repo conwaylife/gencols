@@ -1,0 +1,131 @@
+#!/bin/csh
+
+echo 'Making 2-glider annihiliations in Xlife file 2g_annihil.life'
+# glider/glider annihilations (perpendicular collisions)
+#
+time gencols -pat obj/glider_ne.life obj/glider_nw.life -nph 4 -tc 10 13 \
+        -gen 51 -leq 0 > 2g_annihil.col
+#
+makematrix < 2g_annihil.col > 2g_annihil.life
+
+echo 'Making 2-glider object syntheses in Xlife file 2g_synth.life'
+# glider/glider synthesis of small p1 and p2 objects (perpendicular collisions)
+#
+time gencols -pat obj/glider_ne.life obj/glider_nw.life -nph 4 -tc 10 13 \
+        -gen 51 -leq 24 -geq 1 -filt 12 > 2g_synth.col
+#
+makematrix < 2g_synth.col > 2g_synth.life
+
+echo 'Making kickbacks in kickback.life'
+# glider/glider kickback
+#
+time gencols -pat obj/glider_ne.life obj/glider_nw.life -nph 4 -tc 10 13 \
+        -gen 51 -filt g > kickback.col
+#
+makematrix < kickback.col > kickback.life
+
+echo 'Making headon 2 glider -> 1 glider collision in headon_shift.life'
+# headon collision producing 1 glider on shifted path
+#
+time gencols -pat obj/glider_ne.life obj/glider_sw.life -nph 4 -tc 10 13 \
+        -gen 51 -filt g > headon_shift.col
+#
+makematrix < headon_shift.col > headon_shift.life
+
+echo 'Making glider eater collision in eatg.life'
+# eater annihilates a glider
+#
+time gencols -pat obj/eater_nw.list obj/glider_nw.life -nph 1 -tc 10 13 \
+        -gen 20 -del1 -filt p -leq 0 > eatg.col
+#
+makematrix < eatg.col > eatg.life
+
+echo 'Making block stabilizer for queenbee in blockqb.life'
+# block stabilizes one end of p30 queenbee shuttle
+#
+time gencols -pat obj/block.life obj/queenbee.life -nph 1 -tc 10 17 \
+        -gen 31 -nosynch -del1 -del2 -filt p -leq 6 -geq 6 > blockqb.col
+#
+makematrix < blockqb.col > blockqb.life
+
+echo 'Making eater stabilizers for queenbee in eaterqb.life'
+# eater stabilizes one end of p30 queenbee shuttle
+#
+time gencols -pat obj/eater_se1.life obj/queenbee.life -nph 1 -tc 10 17 \
+        -gen 31 -nosynch -del1 -del2 -filt p -leq 6 -geq 6 > eaterqb.col
+#
+makematrix < eaterqb.col > eaterqb.life
+
+echo 'Making queenbee glider reflector in p30refl.life'
+# p30 queenbee reflects glider at eater-stabilized end 
+# Time on SparcStation ELC: 53.5u 0.3s 0:56 95% 0+292k 0+0io 0pf+0w
+#
+time gencols -pat obj/reflector.life obj/glider_ne.life -nph 4 -tc 14 23 \
+        -gen 28 -del1 -filt g > p30refl.col
+#
+makematrix < p30refl.col > p30refl.life
+
+echo 'Making b-heptomino shuttle stabilization in blockbhep.life'
+# block stabilizes one end of p46 b-heptomino shuttle
+# Time on SparcStation ELC: 30.9u 0.2s 0:32 95% 0+308k 2+0io 2pf+0w
+#
+time gencols -pat obj/block.life obj/bhep_shuttle.life -nph 1 -tc 8 17 \
+        -gen 47 -nosynch -del1 -del2 -filt ap > blockbhep.col
+#
+makematrix < blockbhep.col > blockbhep.life
+
+echo 'Making p30 glidergun collisions in glidergun.life'
+# half-stabilized queenbees interact to produce glider stream (p30 glider gun)
+# Time on SparcStation ELC: 157.8u 0.5s 2:42 97% 0+308k 0+0io 0pf+0w
+#
+time gencols -pat obj/gunhalf1.life obj/gunhalf2.life -nph 15 -tc 12 20 \
+        -gen 31 -nosynch -del1 -del2 -filt g > glidergun.col
+#
+makematrix < glidergun.col > glidergun.life
+
+echo 'Making bheptomino/lwss "half-puffer" in halfpuffer.life'
+# lwss spark converts b-heptomino into p20 puffer engine 
+# Note: bhep_tr10.life contains bheptomino translated 10 units east
+# that will be there as long as the lightweight spaceship has done its job.
+# To make p20 puffertrain, we add another lwss to perturb the reflected 
+# phase of the bheptomino.
+# 
+# Such a search is justified by the observation that a single bheptomino
+# will, after 10 steps, reemerge flipped and translated by 5 units.  However, 
+# it will also be surrounded by cells that soon destroy it.  It is natural to
+# ask whether such cells can be eliminated with an appropriate spaceship
+# spark.  This, presumably, was the intuition that motivated the original
+# invention/discovery of the puffertrain.
+#
+# Time on SparcStation ELC: 45.5u 0.1s 0:46 97% 0+280k 0+0io 0pf+0w
+#
+time gencols -pat obj/bheptomino.life obj/lwss_e.life -nph 4 -tc 2 11 \
+            -gen 21 -test1 obj/bhep_tr10.life -del2 -filt ap > halfpuffer.col
+#
+makematrix < halfpuffer.col > halfpuffer.life
+
+echo 'Making 3-glider spaceship syntheses in makess.life' 
+# Three gliders collide to make a spaceship
+# First, get all ne/nw two-glider collisions
+echo 'First make list of two-glider collisions'
+time gencols -pat obj/glider_ne.life obj/glider_nw.life \
+     -nph 4 -tc 10 13 > 2g.col
+# Next, collide se glider into each collision in turn, looking for spaceships
+# Time on SparcStation ELC: 1711.9u 3.8s 28:56 98% 0+304k 0+0io 0pf+0w
+# NOTE: may take a long time to run.
+#
+echo 'Now collide a third glider with each such collision'
+time gencols -pat 2g.col obj/glider_se.life -nph 4 -tc 8 15 -gen 30 \
+             -filt s > makess.col
+#
+makematrix < makess.col > makess.life
+
+echo 'Making b-heptomino shuttle reflections in p46refl.life' 
+# stabilized b-heptomino shuttle reflects glider and lwss
+# Time on SparcStation ELC: 2147.8u 8.9s 38:40 92% 0+332k 2+14io 1pf+0w
+# NOTE: may take a long time to run.
+#
+time gencols -pat obj/gliderlwss.list obj/bhep_shut_stbl.life -nph 4 \
+        -tc 21 43 -gen 50 -del2 -filt sg > p46refl.col
+#
+makematrix -space 150 < p46refl.col > p46refl.life

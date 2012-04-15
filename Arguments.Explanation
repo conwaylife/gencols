@@ -1,0 +1,117 @@
+The life collision search program "gencols" takes all of its input from
+command-line arguments and from files specified in this arguments.
+For examples of its use, see the file "Examples", which is also an
+executable C-shell script that will produce files suitable for viewing
+with Xlife.
+
+Arguments for basic two-object collisions:
+-----------------------------------------
+The term "product" denotes the pattern that exists after the collision.
+
+-pat <file1> <file2> :         
+     file1 contains a pattern or a list of patterns to try as pattern 1 
+     file2 contains a pattern or a list of patterns to try as pattern 2 
+
+     The format of a single pattern is either a simple character map in 
+     which '.' is dead and '*' is alive, or else a list of cell coordinates.
+     A list of patterns contains one pattern per line, stored as character
+     maps in which '!' is equivalent to a carriage return.
+
+-nph #phases :
+     Try phase differences of 0,...,#phases-1.
+     A phase difference of k means that pattern 2 has been generated
+     k steps, while pattern 1 has been left in its initial form.
+
+-tc #gen1 #gen2:
+     First collision occurs in range generation #gen1 to generation #gen2.
+     Note: the patterns are considered to be in generation 1 initially.
+     (A "collision" is an event such that there exists a single cell with
+     neighbors both in pattern 1 and in pattern 2.  Thus, there are instances
+     in which patterns "collide" but do not affect each other.  These can
+     be selected for output, and are actually useful for finding objects that 
+     pass close to each other.)
+
+-gen #gen :
+     Simulate collision to find product at generation #gen.
+
+Pattern-deletion options:
+------------------------
+
+-del1 :
+     Attempt to delete pattern 1 from product.  Either it will be
+     removed from the product or failure will be flagged.
+
+-del2 :
+     Attempt to delete pattern 2 from product.  Either it will be
+     removed from the product or failure will be flagged.
+
+Special-purpose options: 
+-----------------------
+
+The options below require some analysis of the patterns that will be collided. 
+
+-test1 <file>:
+     Attempt to delete pattern in file from product.  Either it will be
+     removed from the product or failure will be flagged.  See example:
+     "# lwss spark converts b-heptomino into p20 puffer engine"
+
+-test2 <file>:
+     Attempt to delete pattern in file from product.  Also match the phase of
+     this pattern with pattern 2.  Either it will be removed from the 
+     product or failure will be flagged.
+
+     Note: -test1 and -test2 will only succeed if test pattern is located at
+     the same translation position given in specified file.
+
+-nosynch :
+     Normally when a pattern is to be deleted with -del1, -del2, -test1,
+     or -test2, it is generated alone to match the final generation of 
+     the product to be tested.  The -nosynch option eliminates this
+     synchronization step, which can destroy an unstablized oscillator
+     such as a queenbee shuttle.  As a result, the number given for the
+     -gen option must be 1+p, where p is the period of the resulting
+     stabilized oscillator.  (Used in examples that stabilize one end of a
+     shuttle.)
+     
+-genafter #steps :
+     Generate product for #steps steps after attempting deletions.  
+     The result will be the product tested in the output filters. 
+     May sometimes help to eliminate sparks and allow idenitification 
+     of gliders, spaceships, etc.
+
+Output filters:
+--------------
+
+-leq #cells
+     Only output products with population <= #cells
+
+-geq #cells
+     Only output products with population >= #cells
+     
+-filt <filterstring> 
+     Select products according to filter string, as follows:
+
+     A particular selection criterion is activated by including the 
+     corresponding character from the table below:
+
+                p: PERIODIC         (low-period oscillator or spaceship)
+                a: APERIODIC        (no periodicity or too high to detect) 
+                1: PERIOD1          (still-life)
+                2: PERIOD2          (period-2 oscillator)
+                3: PERIOD3          (period-3 oscillator)
+                4: PERIOD4          (period-4 oscillator or spaceship)
+                g: GLIDER           (glider or several in same direction)
+                s: SPACESHIP        (spaceship or several in same direction)
+                n: NOINTERACTION    (patterns do not affect each other)
+                f: FAILURE          (deletion failed assumes -del# or -test#)
+
+     For example:
+         -filt p           (output periodic products)
+         -filt a           (output aperiodic products)
+         -filt 12          (output still-life and period-2 products)
+         -filt gs          (output gliders and spaceships)
+         -filt n           (output collisions that come close and pass by)
+         -filt ap          (output collisions in which the patterns
+                            affect each other, and deletions succeed) 
+
+

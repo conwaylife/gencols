@@ -1,0 +1,10 @@
+This program uses only standard file I/O and should be portable to any
+32-bit system.  To compile, simply type "make".  If your integers are
+smaller than 32-bits, you may still be able to get this to work by
+playing around with WORDLEN defined in defs.h.
+
+Currently, the Makefile uses gcc as the C compiler.  This will need to be
+changed (for example to "cc") if you don't have gcc.
+
+The Makefile also creates a directory "obj" in which it places a small
+library of patterns for collisions.
