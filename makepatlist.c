@@ -32,7 +32,7 @@ char patstr[MAXPATLEN];
    allochash(&pat,DEFAULTHSIZE);
 
    for (argind=1; argind<argc; argind++) {
-       fclose(loadpat(pat,1,argv[argind],NULL));
+       fclose(loadpat(pat,NULL,1,argv[argind],NULL));
        printf("%s\n",patstring(pat,1,patstr));
    }
 }

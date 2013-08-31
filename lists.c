@@ -39,7 +39,7 @@ HashTable hash;
 #endif
 
 
-  for (cell=(CellList **)hash.table+hashtriple(x,y,gen,hash.hsize); 
+  for (cell=(CellList **)hash.table+hashtriple(x,y,gen,hash.hsize);
                                               *cell; cell= &((*cell)->next)) {
 #ifdef TRACEHASH
   tries++;
@@ -66,9 +66,9 @@ void setcell(x,y,gen,val,hash)
 int x,y,gen,val;
 HashTable hash;
 {
- 
+
   CellList **cell;
-  
+
   cell=findcell(x,y,gen,hash);
 
   if (!(*cell)) {
@@ -88,7 +88,7 @@ HashTable hash;
 {
 
   CellList **cell;
-  
+
   cell=findcell(x,y,gen,hash);
 
   if (!(*cell)) {
@@ -118,12 +118,12 @@ HashTable hash;
 
 }
 
-void freehash(hash) 
+void freehash(hash)
 HashTable *hash;
 {
   CellList **cell,**tcell;
 
-  for (cell=(CellList **)hash->table; 
+  for (cell=(CellList **)hash->table;
        cell<(CellList **)hash->table+hash->hsize; cell++) {
     tcell=cell;
     while (*tcell) dodelete(tcell)
@@ -144,11 +144,11 @@ HashTable hash;
 
 }
 
-int isglider(x,y,dx,dy,gen,hash) 
+int isglider(x,y,dx,dy,gen,hash)
 int x,y,gen,dx,dy;
 HashTable hash;
 {
-   return 
+   return
        !getcell(x-2*dx,y-2*dy,gen,hash) &&
        !getcell(x-2*dx,y-1*dy,gen,hash) &&
        !getcell(x-2*dx,y-0*dy,gen,hash) &&
@@ -190,17 +190,17 @@ HashTable hash;
    for (curgen=gen; curgen<gen+4; curgen++) {
       for (dx=-1; dx<=1; dx+=2)
          for (dy=-1; dy<=1; dy+=2) {
-           for (cell=(CellList **)hash.table; 
+           for (cell=(CellList **)hash.table;
               cell<(CellList **)hash.table+hash.hsize; cell++) {
               tcell=cell;
               while (*tcell) {
                  if ((*tcell)->gen==curgen) {
                    if (isglider((*tcell)->x+dx,(*tcell)->y,dx,dy,curgen,hash))
                      printf("%5d %5d %5d %5d %5d\n",
-                             (*tcell)->x+dx,(*tcell)->y,dx,dy,curgen);   
+                             (*tcell)->x+dx,(*tcell)->y,dx,dy,curgen);
                  }
                  tcell= &((*tcell)->next);
-             } 
+             }
            }
          }
       gennosave(hash,curgen);
@@ -220,7 +220,7 @@ HashTable hash;
   /* assumes next generation has all zero entries */
 
   /* calculate neighborhoods */
-  for (cell=(CellList **)hash.table; 
+  for (cell=(CellList **)hash.table;
        cell<(CellList **)hash.table+hash.hsize; cell++) {
     tcell=cell;
     while (*tcell) {
@@ -241,7 +241,7 @@ HashTable hash;
 
 
   /* find next generation */
-  for (cell=(CellList **)hash.table; 
+  for (cell=(CellList **)hash.table;
        cell<(CellList **)hash.table+hash.hsize; cell++) {
     tcell=cell;
     while (*tcell) {
@@ -266,7 +266,7 @@ HashTable hash;
 }
 
 
-outhash(hash) 
+outhash(hash)
 HashTable hash;
 {
 int i;
@@ -286,7 +286,7 @@ CellList *cell;
 
 }
 
-outgen(hash,gen) 
+outgen(hash,gen)
 HashTable hash;
 int gen;
 {
@@ -296,7 +296,7 @@ CellList *cell;
    for (i=0; i<hash.hsize; i++) {
      if (cell=(CellList *)hash.table[i]) {
        while (cell) {
-         if ((cell->gen==gen)&&(cell->u.val)) 
+         if ((cell->gen==gen)&&(cell->u.val))
              printf("%d %d\n",cell->x,cell->y);
          cell=cell->next;
        }
@@ -305,14 +305,14 @@ CellList *cell;
 
 }
 
-delgen(hash,gen) 
+delgen(hash,gen)
 HashTable hash;
 int gen;
 {
   int i;
   CellList **cell,**tcell;
 
-  for (cell=(CellList **)hash.table; 
+  for (cell=(CellList **)hash.table;
           cell<(CellList **)hash.table+hash.hsize; cell++) {
     tcell=cell;
     while (*tcell) {
@@ -328,12 +328,12 @@ int dx,dy,forcegen;
 {
   CellList **cell,**tcell;
 
-  for (cell=(CellList **)frompat.table; 
+  for (cell=(CellList **)frompat.table;
        cell<(CellList **)frompat.table+frompat.hsize; cell++) {
     tcell=cell;
     while (*tcell) {
       setcell(((*tcell)->x)+dx,((*tcell)->y)+dy,
-	      (forcegen==NOFORCE)?(*tcell)->gen:forcegen, 
+	      (forcegen==NOFORCE)?(*tcell)->gen:forcegen,
                                ((*tcell)->u.val),topat);
     tcell= &((*tcell)->next);
   }
@@ -349,8 +349,8 @@ int *x1,*y1,*x2,*y2;
 
   *x1= *y1=INT_MAX;
   *x2= *y2=INT_MIN;
- 
-  for (cell=(CellList **)hash.table; 
+
+  for (cell=(CellList **)hash.table;
        cell<(CellList **)hash.table+hash.hsize; cell++) {
     tcell=cell;
     while (*tcell) {
@@ -371,8 +371,8 @@ int gen;
 {
   CellList **cell,**tcell;
   int cellcount=0;
- 
-  for (cell=(CellList **)hash.table; 
+
+  for (cell=(CellList **)hash.table;
        cell<(CellList **)hash.table+hash.hsize; cell++) {
     tcell=cell;
     while (*tcell) {
@@ -386,7 +386,7 @@ int gen;
   return cellcount;
 }
 
-printpic(hash,gen) 
+printpic(hash,gen)
 HashTable hash;
 int gen;
 {
@@ -396,7 +396,7 @@ int gen;
 
   boundingrect(hash,gen,&x1,&y1,&x2,&y2);
 
-  for (y=y1; y<=y2; y++) { 
+  for (y=y1; y<=y2; y++) {
     for (x=x1; x<=x2; x++) {
       val=getcell(x,y,gen,hash);
       putchar(val<16?outstr[val]:'+');
@@ -415,7 +415,7 @@ int *mtx,*mty;
   int x,y,tmp;
   int maxmatch=0,countmatch;
 
-  for (cell1=(CellList **)pat1.table; 
+  for (cell1=(CellList **)pat1.table;
        cell1<(CellList **)pat1.table+pat1.hsize; cell1++) {
     tcell1=cell1;
     while (*tcell1) {
@@ -425,7 +425,7 @@ int *mtx,*mty;
         y=sy*(*tcell1)->y;
         if (transpose) {tmp=x; x=y; y=tmp;}
 
-	for (cell2=(CellList **)pat2.table; 
+	for (cell2=(CellList **)pat2.table;
 	     cell2<(CellList **)pat2.table+pat2.hsize; cell2++) {
 	  tcell2=cell2;
 	  while (*tcell2) {
@@ -449,9 +449,9 @@ int *mtx,*mty;
   return maxmatch;
 }
 
-subpattern(pat1,pat2,dx,dy,gen1,gen2,count)
+subpattern(pat1,pat2,dx,dy,gen1,gen2,count,reverse)
 HashTable pat1,pat2;
-int dx,dy,gen1,gen2,*count;
+int dx,dy,gen1,gen2,*count,reverse;
 {
   CellList **cell,**tcell;
   int mismatch=0;
@@ -463,13 +463,13 @@ int dx,dy,gen1,gen2,*count;
     tcell=cell;
     while (*tcell) {
        if ((gen1==ALLGENS || (*tcell)->gen==gen1) &&
-	  !getcell((*tcell)->x+dx,(*tcell)->y+dy,gen2,pat2)) 
+	  (reverse ^ !getcell((*tcell)->x+dx,(*tcell)->y+dy,gen2,pat2)))
                                             mismatch=1;
        else (*count)++;
        tcell= &((*tcell)->next);
-    } 
-  } 
- 
+    }
+  }
+
   return !mismatch;
 }
 
@@ -486,8 +486,8 @@ int dx,dy,gen1,gen2;
        if (gen1==ALLGENS || (*tcell)->gen==gen1)
 	  deletecell((*tcell)->x+dx,(*tcell)->y+dy,gen2,pat2);
        tcell= &((*tcell)->next);
-    } 
-  } 
+    }
+  }
 }
 
 
@@ -499,20 +499,20 @@ int *xshift,*yshift;
   CellList **cell,**tcell;
   int x1,y1,x2,y2;
   int mismatch=0;
- 
+
   boundingrect(hash,gen1,&x1,&y1,&x2,&y2);
   boundingrect(hash,gen2,xshift,yshift,&x2,&y2);
-  (*xshift)-=x1;   
+  (*xshift)-=x1;
   (*yshift)-=y1;
 
   for (cell=(CellList **) hash.table;
        !mismatch && cell<(CellList **) hash.table+ hash.hsize; cell++) {
     tcell=cell;
     while (*tcell) {
-      if ((*tcell)->gen==gen1 && 
-	  !getcell((*tcell)->x+(*xshift),(*tcell)->y+(*yshift),gen2,hash)) 
+      if ((*tcell)->gen==gen1 &&
+	  !getcell((*tcell)->x+(*xshift),(*tcell)->y+(*yshift),gen2,hash))
 	{mismatch=1; break;}
-      else if ((*tcell)->gen==gen2 && 
+      else if ((*tcell)->gen==gen2 &&
 	  !getcell((*tcell)->x-(*xshift),(*tcell)->y-(*yshift),gen1,hash))
 	{mismatch=1; break;}
       tcell= &((*tcell)->next);
@@ -521,7 +521,7 @@ int *xshift,*yshift;
   return (!mismatch);
 }
 
-int findosc(hash,gen,tmp,xshift,yshift) 
+int findosc(hash,gen,tmp,xshift,yshift)
 HashTable hash,tmp;
 int gen;
 int *xshift,*yshift;
@@ -549,7 +549,7 @@ HashTable hash;
   CellList **cell,**tcell;
 
   /* mark neighborhoods */
-  for (cell=(CellList **)hash.table; 
+  for (cell=(CellList **)hash.table;
        cell<(CellList **)hash.table+hash.hsize; cell++) {
     tcell=cell;
     while (*tcell) {
@@ -579,19 +579,19 @@ int gen;
   marknghbrhoods(pat1,gen);
   marknghbrhoods(pat2,gen);
 
-  for (cell1=(CellList **)pat1.table; 
+  for (cell1=(CellList **)pat1.table;
        cell1<(CellList **)pat1.table+pat1.hsize; cell1++) {
     tcell1=cell1;
     while (*tcell1) {
       if ((*tcell1)->gen== SPECGEN) {
-	for (cell2=(CellList **)pat2.table; 
+	for (cell2=(CellList **)pat2.table;
 	     cell2<(CellList **)pat2.table+pat2.hsize; cell2++) {
 	  tcell2=cell2;
 	  while (*tcell2) {
 	    if ((*tcell2)->gen== SPECGEN) {
               dx=(*tcell2)->x-(*tcell1)->x;
               dy=(*tcell2)->y-(*tcell1)->y;
-              if (!getcell(dx,dy,SPECGEN,align)) 
+              if (!getcell(dx,dy,SPECGEN,align))
                         setcell(dx,dy,SPECGEN,gen,align);
 	    }
 	    tcell2= &((*tcell2)->next);
@@ -607,7 +607,7 @@ int gen;
 }
 
 
-char *patstring(hash,gen,s) 
+char *patstring(hash,gen,s)
 HashTable hash;
 int gen;
 char *s;
@@ -621,7 +621,7 @@ char *s;
   i=0;
   if (x2<x1) s[i++]='!';
   else {
-    for (y=y1; i<MAXPATLEN-2 && y<=y2; y++) { 
+    for (y=y1; i<MAXPATLEN-2 && y<=y2; y++) {
       for (xmax=x2; xmax>=x1; xmax--) if (getcell(xmax,y,gen,hash)) break;
       for (x=x1; i<MAXPATLEN-2 && x<=xmax; x++) {
 	val=getcell(x,y,gen,hash);
@@ -636,8 +636,8 @@ char *s;
 
 }
 
-FILE *loadpat(hash,gen,filename,file)
-HashTable hash;
+FILE* loadpat(hash,hash2,gen,filename,file)
+HashTable hash,*hash2;
 int gen;
 char *filename;
 FILE *file;
@@ -655,25 +655,29 @@ int nothing_read=1;
    if (!file) {
       printf("Can't open %s\n",filename);
       exit(0);
-   } 
+   }
 
    delgen(hash,ALLGENS);
-   
+   if (hash2) delgen(*hash2,ALLGENS);
+
    i=0;
    while (fgets(inpline,MAXLINE,file)) {
 
      /* flag that at least one line was read from file */
-     nothing_read=0;     
+     nothing_read=0;
 
-     /* if file contains one pattern per line, just read next line */ 
-     if (strchr(inpline,'!')) {  
+     /* if file contains one pattern per line, just read next line */
+     if (strchr(inpline,'!')) {
         char *c;
-      
-         i=j=0; 
+
+         i=j=0;
          for (c=inpline; *c!=' ' && *c!='\0'; c++) {
             if (*c=='!') { i++; j=0; }
             else {
-              if (*c=='*') setcell(j,i,gen,1,hash);
+              if (*c=='*')
+                setcell(j,i,gen,1,hash);
+              else if (hash2 && *c=='.')
+                setcell(j,i,gen,1,*hash2);
               j++;
             }
          }
@@ -687,7 +691,10 @@ int nothing_read=1;
       }
      else {
        for (j=0; inpline[j]!='\0'; j++) {
-         if (inpline[j]=='*') setcell(j,i,gen,1,hash);
+         if (inpline[j]=='*')
+           setcell(j,i,gen,1,hash);
+         else if (hash2 && inpline[j]=='.')
+           setcell(j,i,gen,1,*hash2);
        }
        i++;
      }
@@ -696,10 +703,8 @@ int nothing_read=1;
    if (nothing_read) {
       fclose(file);
       file=NULL;
-   } 
-  
+   }
+
    return file;
 
 }
-
-

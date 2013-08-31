@@ -63,6 +63,13 @@ The options below require some analysis of the patterns that will be collided.
      Note: -test1 and -test2 will only succeed if test pattern is located at
      the same translation position given in specified file.
 
+-mask1 <file>:
+-mask2 <file>:
+     The same as -test1 and test2, but also check that dead cells in product
+     match those specified in test pattern.
+
+     (Added by Ivan Fomichev.)
+
 -nosynch :
      Normally when a pattern is to be deleted with -del1, -del2, -test1,
      or -test2, it is generated alone to match the final generation of 

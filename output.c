@@ -23,9 +23,9 @@ int maxcells=MAXPATLEN,mincells= -1;
 
 outcollisions(pat1,pat2,align,gen,tmp,resultafter,
                        pat1gen,pat2gen,delpat1,delpat2,synch,genresult,
-                       testpat1,testpat2) 
-HashTable pat1,pat2,align,tmp,pat1gen,pat2gen,testpat1,testpat2;
-int gen,resultafter,delpat1,delpat2,synch,genresult;
+                       testpat1,testpat2,maskpat1,maskpat2,pat1offset,pat2offset,phase)
+HashTable pat1,pat2,align,tmp,pat1gen,pat2gen,testpat1,testpat2,maskpat1,maskpat2;
+int gen,resultafter,delpat1,delpat2,synch,genresult,pat1offset,pat2offset,phase;
 {
   CellList **cell,**tcell;
   static char outpatini[MAXPATLEN],outpatfin[MAXPATLEN];
@@ -35,7 +35,7 @@ int gen,resultafter,delpat1,delpat2,synch,genresult;
   remove1=(synch)?pat1gen:pat1;
   remove2=(synch)?pat2gen:pat2;
 
-  for (cell=(CellList **)align.table; 
+  for (cell=(CellList **)align.table;
        cell<(CellList **)align.table+align.hsize; cell++) {
     tcell=cell;
     while (*tcell) {
@@ -44,7 +44,7 @@ int gen,resultafter,delpat1,delpat2,synch,genresult;
 
         /* set up collision */
         copypattern(tmp,pat1,0,0,1);
-        copypattern(tmp,pat2,-(*tcell)->x,-(*tcell)->y,1);	
+        copypattern(tmp,pat2,-(*tcell)->x,-(*tcell)->y,1);
 
         /* copy picture of collision to a string */
         patstring(tmp,1,outpatini);
@@ -63,51 +63,52 @@ int gen,resultafter,delpat1,delpat2,synch,genresult;
 #endif
 
 #define MAXOSCTEST 4
-	  removefailed=0; 
+	  removefailed=0;
 	  if (countpat(tmp,tgen)
-	      ==countpat(pat1gen,tgen)+countpat(pat2gen,tgen) 
-	      && subpattern(pat1gen,tmp,0,0,tgen,tgen,&count)
-	      && subpattern(pat2gen,tmp,-(*tcell)->x,-(*tcell)->y,tgen,tgen,&count))
+	      ==countpat(pat1gen,tgen)+countpat(pat2gen,tgen)
+	      && subpattern(pat1gen,tmp,0,0,tgen,tgen,&count,0)
+	      && subpattern(pat2gen,tmp,-(*tcell)->x,-(*tcell)->y,tgen,tgen,&count,0))
 	    per= -1;
-	  else { 
-	    if (delpat1) { 
-	      if (subpattern(remove1,tmp,0,0,ALLGENS,tgen,&count))
+	  else {
+	    if (delpat1) {
+	      if (subpattern(remove1,tmp,0,0,ALLGENS,tgen,&count,0))
 		delpattern(remove1,tmp,0,0,ALLGENS,tgen);
-	      else removefailed=1; 
+	      else removefailed=1;
 	    }
 	    if (delpat2) {
 	      if  (subpattern(remove2,tmp,
-			      -(*tcell)->x,-(*tcell)->y,ALLGENS,tgen,&count)) 
+			      -(*tcell)->x,-(*tcell)->y,ALLGENS,tgen,&count,0))
 		delpattern(remove2,tmp,
 			   -(*tcell)->x,-(*tcell)->y,ALLGENS,tgen);
 	      else removefailed=1;
 	    }
 	    if (testpat1.table) {
-	      if (subpattern(testpat1,tmp,0,0,ALLGENS,tgen,&count))
+	      if (subpattern(testpat1,tmp,0,0,ALLGENS,tgen,&count,0)
+                  && (!maskpat1.table || subpattern(maskpat1,tmp,0,0,ALLGENS,tgen,&count,1)))
 		delpattern(testpat1,tmp,0,0,ALLGENS,tgen);
-	      else removefailed=1; 
+	      else removefailed=1;
 	    }
 	    if (testpat2.table) {
-	      if  (subpattern(testpat2,tmp,
-			      -(*tcell)->x,-(*tcell)->y,ALLGENS,tgen,&count)) 
+	      if  (subpattern(testpat2,tmp, -(*tcell)->x,-(*tcell)->y,ALLGENS,tgen,&count,0)
+                   && (!maskpat2.table || subpattern(maskpat2,tmp,-(*tcell)->x,-(*tcell)->y,ALLGENS,tgen,&count,1)))
 		delpattern(testpat2,tmp,
 			   -(*tcell)->x,-(*tcell)->y,ALLGENS,tgen);
-	      else removefailed=1; 
+	      else removefailed=1;
 	    }
 
 #ifdef USEBOXES
 	    genlist(tmp,tgen,genresult);
 	    tgen+=genresult;
 #else
-	    for ( ; tgen<resultafter+genresult; tgen++) {    
+	    for ( ; tgen<resultafter+genresult; tgen++) {
 	      gennosave(tmp,tgen);
 	    }
 #endif
- 
+
 	    for (per=1; per<=MAXOSCTEST; per++) {
 	      gensparse(tmp,tgen+per-1);
 	      if (comparegen(tmp,tgen,tgen+per,&xshift,&yshift)) break;
-	    } 
+	    }
 	  }
 
 	  if (per>=1 && per<=MAXOSCTEST) patstring(tmp,tgen,outpatfin);
@@ -115,34 +116,34 @@ int gen,resultafter,delpat1,delpat2,synch,genresult;
 
 	  outputpattern(outpatini,outpatfin,
 			countpat(tmp,tgen),removefailed,
-                        per,xshift,yshift);
+                        per,xshift,yshift,pat1offset,pat2offset,phase);
 
 	}
       }
-      tcell= &((*tcell)->next);     
+      tcell= &((*tcell)->next);
     }
   }
 }
 
-setfilters(fstring) 
+setfilters(fstring)
 char *fstring;
 {
    strcpy(filterstring,fstring);
 }
 
-setlower(lbound) 
+setlower(lbound)
 int lbound;
 {
    mincells=lbound;
 }
 
-setupper(ubound) 
+setupper(ubound)
 int ubound;
 {
    maxcells=ubound;
 }
 
-outputpattern(patstr1,patstr2,numcells,removefailed,per,xshift,yshift) 
+outputpattern(patstr1,patstr2,numcells,removefailed,per,xshift,yshift,pat1offset,pat2offset,phase)
 char *patstr1,*patstr2;
 int per,numcells,removefailed,xshift,yshift;
 {
@@ -154,10 +155,10 @@ int maxmove=0;
       if (-yshift>maxmove) maxmove= -yshift;
 
             if (numcells<mincells || numcells>maxcells) return;
-            if (removefailed && !strchr(filterstring,'f') ) return; 
-            if (per== -1 && !strchr(filterstring,'n') ) return; 
+            if (removefailed && !strchr(filterstring,'f') ) return;
+            if (per== -1 && !strchr(filterstring,'n') ) return;
             if (per>MAXOSCTEST && !strchr(filterstring,'a') ) return;
-            if (per>=1 && per <=4 && !strchr(filterstring,'p') && 
+            if (per>=1 && per <=4 && !strchr(filterstring,'p') &&
                 !strchr(filterstring,'0'+per)
                 && (maxmove!=1 || !strchr(filterstring,'g'))
                 && (maxmove!=2 || !strchr(filterstring,'s'))) return;
@@ -167,9 +168,11 @@ int maxmove=0;
             if (removefailed) printf(" remove_failed");
             else if (per== -1) printf(" none");
             else if (per>MAXOSCTEST) printf(" other");
-            else printf(" (%d,%d,%d)",per,xshift,yshift); 
+            else printf(" (%d,%d,%d)",per,xshift,yshift);
+
+            printf(" [%u,%u,%u]", pat1offset, pat2offset, phase);
 
             printf("\n");
-       
+
             fflush(stdout);
 }
