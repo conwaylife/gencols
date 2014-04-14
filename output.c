@@ -15,11 +15,12 @@
 
 #include <stdio.h>
 #include <limits.h>
-#include <malloc.h>
 #include "defs.h"
 
 char filterstring[MAXLINE]="apnf";
 int maxcells=MAXPATLEN,mincells= -1;
+
+void outputpattern(char *patstr1,char *patstr2,int numcells,int removefailed,int per,int xshift,int yshift,int pat1offset,int pat2offset,int phase);
 
 outcollisions(pat1,pat2,align,gen,tmp,resultafter,
                        pat1gen,pat2gen,delpat1,delpat2,synch,genresult,
@@ -143,7 +144,7 @@ int ubound;
    maxcells=ubound;
 }
 
-outputpattern(patstr1,patstr2,numcells,removefailed,per,xshift,yshift,pat1offset,pat2offset,phase)
+void outputpattern(patstr1,patstr2,numcells,removefailed,per,xshift,yshift,pat1offset,pat2offset,phase)
 char *patstr1,*patstr2;
 int per,numcells,removefailed,xshift,yshift;
 {

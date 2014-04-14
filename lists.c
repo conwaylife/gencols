@@ -14,7 +14,6 @@
 
 #include <stdio.h>
 #include <limits.h>
-#include <malloc.h>
 #include "defs.h"
 
 #define HASHMULT 1999

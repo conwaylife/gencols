@@ -36,7 +36,7 @@ typedef struct {
    int maxc,maxr;
  } TORUS;
 
-typedef unsigned long cellseg;
+typedef unsigned int cellseg;
 
 #define WORDLEN 32
 #define URBIT 0
