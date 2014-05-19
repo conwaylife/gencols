@@ -17,13 +17,13 @@
 
 /* various constants */
 /* MAXCOL, MAXROW, DEFMR, DEFMC obsolete for list code */ 
-#define MAXCOL 100  
-#define MAXROW 100  
+#define MAXCOL 800
+#define MAXROW 800
 #define DEFMR 20    
 #define DEFMC 20   
-#define MAXLINE 512
-#define MAXPATLEN 8192
-#define DEFAULTHSIZE 1024
+#define MAXLINE 8192
+#define MAXPATLEN 16384
+#define DEFAULTHSIZE 8192
 #define NOFORCE -1
 #define SPECGEN -1
 #define ALLGENS -2
