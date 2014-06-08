@@ -63,7 +63,7 @@ int gen,resultafter,delpat1,delpat2,synch,genresult,pat1offset,pat2offset,phase;
 	  }
 #endif
 
-#define MAXOSCTEST 4
+#define MAXOSCTEST 30
 	  removefailed=0;
 	  if (countpat(tmp,tgen)
 	      ==countpat(pat1gen,tgen)+countpat(pat2gen,tgen)
@@ -159,7 +159,7 @@ int maxmove=0;
             if (removefailed && !strchr(filterstring,'f') ) return;
             if (per== -1 && !strchr(filterstring,'n') ) return;
             if (per>MAXOSCTEST && !strchr(filterstring,'a') ) return;
-            if (per>=1 && per <=4 && !strchr(filterstring,'p') &&
+            if (per>=1 && per <= MAXOSCTEST && !strchr(filterstring,'p') &&
                 !strchr(filterstring,'0'+per)
                 && (maxmove!=1 || !strchr(filterstring,'g'))
                 && (maxmove!=2 || !strchr(filterstring,'s'))) return;
