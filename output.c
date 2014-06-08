@@ -112,7 +112,7 @@ int gen,resultafter,delpat1,delpat2,synch,genresult,pat1offset,pat2offset,phase;
 	    }
 	  }
 
-	  if (per>=1 && per<=MAXOSCTEST) patstring(tmp,tgen,outpatfin);
+	  if (1 || per>=1 && per<=MAXOSCTEST) patstring(tmp,tgen,outpatfin);
 	  else strcpy(outpatfin,"not_shown");
 
 	  outputpattern(outpatini,outpatfin,
